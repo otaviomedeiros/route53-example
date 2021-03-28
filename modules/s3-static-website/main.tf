@@ -8,6 +8,7 @@ data "aws_iam_policy_document" "website_domain_s3_policy" {
     actions   = ["s3:GetObject"]
     resources = ["arn:aws:s3:::${local.website_domain}/*"]
     effect    = "Allow"
+    sid       = "PublicReadGetObject"
 
     principals {
       type        = "*"
@@ -21,6 +22,7 @@ data "aws_iam_policy_document" "website_www_subdomain_s3_policy" {
     actions   = ["s3:GetObject"]
     resources = ["arn:aws:s3:::${local.website_www_subdomain}/*"]
     effect    = "Allow"
+    sid       = "PublicReadGetObject"
 
     principals {
       type        = "*"
@@ -57,7 +59,7 @@ resource "aws_route53_record" "website_domain" {
   type    = "A"
   
   alias {
-    name = aws_s3_bucket.website_domain_bucket.website_endpoint
+    name = aws_s3_bucket.website_domain_bucket.website_domain
     zone_id = aws_s3_bucket.website_domain_bucket.hosted_zone_id
     evaluate_target_health = true
   }
@@ -69,7 +71,7 @@ resource "aws_route53_record" "website_www_subdomain" {
   type    = "A"
   
   alias {
-    name = aws_s3_bucket.website_www_subdomain_bucket.website_endpoint
+    name = aws_s3_bucket.website_www_subdomain_bucket.website_domain
     zone_id = aws_s3_bucket.website_www_subdomain_bucket.hosted_zone_id
     evaluate_target_health = true
   }
