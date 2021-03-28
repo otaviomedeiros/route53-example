@@ -7,6 +7,7 @@ module "route53" {
     source = "./modules/route53"
 
     domain = var.domain
+    sub_domain = var.sub_domain
 }
 
 module "s3_static_website" {
