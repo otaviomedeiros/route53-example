@@ -1,6 +1,6 @@
 profile           = "personal"
-region            = "us-east-1"
+us_region         = "us-east-1"
+br_region         = "sa-east-1"
 domain            = "otaviomedeiros.com"
 sub_domain        = "store.otaviomedeiros.com"
-availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
-
+vpc_cidr_block    = "192.168.0.0/16"

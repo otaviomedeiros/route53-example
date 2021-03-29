@@ -3,7 +3,11 @@ variable "profile" {
   description = "Profile to access aws account"
 }
 
-variable "region" {
+variable "us_region" {
+  type = string
+}
+
+variable "br_region" {
   type = string
 }
 
@@ -12,5 +16,9 @@ variable "domain" {
 }
 
 variable "sub_domain" {
+  type = string
+}
+
+variable "vpc_cidr_block" {
   type = string
 }
