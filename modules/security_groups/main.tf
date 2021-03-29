@@ -1,3 +1,7 @@
+variable "vpc_id" {
+  type = string
+}
+
 resource "aws_security_group" "ssh_security_group" {
   name        = "ssh"
   description = "Allow SSH inbound traffic only"
