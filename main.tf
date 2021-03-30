@@ -27,15 +27,17 @@ module "vpc_us" {
   source = "./modules/vpc"
 
   cidr_block = var.vpc_cidr_block
+  availability_zone = var.us_availability_zone
 }
 
 module "vpc_br" {
   source = "./modules/vpc"
   providers = {
     aws = aws.brazil
-  }
-
+  } 
+  
   cidr_block = var.vpc_cidr_block
+  availability_zone = var.br_availability_zone
 }
 
 module "security_groups_us" {
