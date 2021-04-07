@@ -54,3 +54,28 @@ module "security_groups_br" {
 
   vpc_id = module.vpc_br.vpc_id
 }
+
+module "ec2_us" {
+  source = "./modules/ec2"
+
+  ami = "ami-0be2609ba883822ec"
+  availability_zone = var.us_availability_zone
+  public_subnet_id = module.vpc_us.public_subnet_id
+  ssh_key_pair_name = "Route53LearningKeyPairUS"
+  security_group_id = module.security_groups_us.ssh_security_group_id
+  nginx_file_content = "US"
+}
+
+module "ec2_br" {
+  source = "./modules/ec2"
+  providers = {
+    aws = aws.brazil
+  }
+
+  ami = "ami-0717ee8f1c64a9f3c"
+  availability_zone = var.br_availability_zone
+  public_subnet_id = module.vpc_br.public_subnet_id
+  ssh_key_pair_name = "Route53LearningKeyPairBR"
+  security_group_id = module.security_groups_br.ssh_security_group_id
+  nginx_file_content = "BR"
+}

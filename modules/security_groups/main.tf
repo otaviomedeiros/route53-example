@@ -14,6 +14,13 @@ resource "aws_security_group" "ssh_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -24,4 +31,8 @@ resource "aws_security_group" "ssh_security_group" {
   tags = {
     Name = "Route 53 example security group"
   }
+}
+
+output "ssh_security_group_id" {
+  value = aws_security_group.ssh_security_group.id
 }
