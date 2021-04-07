@@ -19,6 +19,14 @@ variable "br_availability_zone" {
   type = string
 }
 
+variable "us_ami" {
+  type = string
+}
+
+variable "br_ami" {
+  type = string
+}
+
 variable "domain" {
   type = string
 }

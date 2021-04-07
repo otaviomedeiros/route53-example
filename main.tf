@@ -1,4 +1,5 @@
 provider "aws" {
+  alias   = "us"
   profile = var.profile
   region  = var.us_region
 }
@@ -11,6 +12,9 @@ provider "aws" {
 
 module "route53" {
     source = "./modules/route53"
+    providers = {
+      aws = aws.us
+    } 
 
     domain = var.domain
     sub_domain = var.sub_domain
@@ -18,6 +22,9 @@ module "route53" {
 
 module "s3_static_website" {
     source = "./modules/s3-static-website"
+    providers = {
+      aws = aws.us
+    } 
 
     bucket_name = var.domain
     main_hosted_zone_id = module.route53.main_hosted_zone_id
@@ -25,6 +32,9 @@ module "s3_static_website" {
 
 module "vpc_us" {
   source = "./modules/vpc"
+  providers = {
+    aws = aws.us
+  } 
 
   cidr_block = var.vpc_cidr_block
   availability_zone = var.us_availability_zone
@@ -42,6 +52,9 @@ module "vpc_br" {
 
 module "security_groups_us" {
   source = "./modules/security_groups"
+  providers = {
+    aws = aws.us
+  } 
 
   vpc_id = module.vpc_us.vpc_id
 }
@@ -57,8 +70,11 @@ module "security_groups_br" {
 
 module "ec2_us" {
   source = "./modules/ec2"
+  providers = {
+    aws = aws.us
+  } 
 
-  ami = "ami-0be2609ba883822ec"
+  ami = var.us_ami
   availability_zone = var.us_availability_zone
   public_subnet_id = module.vpc_us.public_subnet_id
   ssh_key_pair_name = "Route53LearningKeyPairUS"
@@ -72,7 +88,7 @@ module "ec2_br" {
     aws = aws.brazil
   }
 
-  ami = "ami-0717ee8f1c64a9f3c"
+  ami = var.br_ami
   availability_zone = var.br_availability_zone
   public_subnet_id = module.vpc_br.public_subnet_id
   ssh_key_pair_name = "Route53LearningKeyPairBR"
