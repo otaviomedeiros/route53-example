@@ -31,3 +31,7 @@ resource "aws_route53_record" "sub_domain_dns_record" {
 output "main_hosted_zone_id" {
     value = aws_route53_zone.main.zone_id
 }
+
+output "sub_domain_hosted_zone_id" {
+    value = aws_route53_zone.sub_domain.zone_id
+}
