@@ -18,8 +18,6 @@ module "route53" {
 
     domain = var.domain
     sub_domain = var.sub_domain
-    north_america_ec2_public_id = module.ec2_us.ec2_public_ip
-    south_america_ec2_public_id = module.ec2_br.ec2_public_ip
 }
 
 module "s3_static_website" {
@@ -76,11 +74,14 @@ module "ec2_us" {
     aws = aws.us
   } 
 
+  hosted_zone_id = module.route53.sub_domain_hosted_zone_id
+  sub_domain = var.sub_domain
   ami = var.us_ami
   availability_zone = var.us_availability_zone
   public_subnet_id = module.vpc_us.public_subnet_id
   ssh_key_pair_name = "Route53LearningKeyPairUS"
   security_group_id = module.security_groups_us.ssh_security_group_id
+  geolocation_continent_code = "NA"
   nginx_file_content = "US"
 }
 
@@ -90,10 +91,13 @@ module "ec2_br" {
     aws = aws.brazil
   }
 
+  hosted_zone_id = module.route53.sub_domain_hosted_zone_id
+  sub_domain = var.sub_domain
   ami = var.br_ami
   availability_zone = var.br_availability_zone
   public_subnet_id = module.vpc_br.public_subnet_id
   ssh_key_pair_name = "Route53LearningKeyPairBR"
   security_group_id = module.security_groups_br.ssh_security_group_id
+  geolocation_continent_code = "SA"
   nginx_file_content = "BR"
 }
