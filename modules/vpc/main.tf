@@ -4,9 +4,10 @@ variable "cidr_block" {
 }
 
 variable "availability_zone" {
-  type = string
-  description = "Single availability zone for the VPC"
+  type = map
 }
+
+data "aws_region" "current" {}
 
 resource "aws_vpc" "main_vpc" {
   cidr_block       = var.cidr_block
@@ -41,7 +42,7 @@ resource "aws_route_table" "main_route_table" {
 resource "aws_subnet" "public_subnet" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = cidrsubnet(var.cidr_block, 4, 1)
-  availability_zone = var.availability_zone
+  availability_zone = var.availability_zone[data.aws_region.current.name]
 
   tags = {
     Name = "Route 53 example VPC - Public subnet"

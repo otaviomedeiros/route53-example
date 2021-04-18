@@ -1,5 +1,5 @@
 variable "ami" {
-  type = string
+  type = map
 }
 
 variable "dns" {
@@ -10,26 +10,32 @@ variable "dns" {
   })
 }
 
-variable "vpc" {
-  type = object({
-    availability_zone = string
-    public_subnet_id = string
-    security_group_id = string
-  })
-}
-
-variable "ssh_key_pair_name" {
+variable "public_subnet_id" {
   type = string
 }
 
+variable "security_group_id" {
+  type = string
+}
+
+variable "availability_zone" {
+  type = map
+}
+
+variable "ssh_key_pair_name" {
+  type = map
+}
+
+data "aws_region" "current" {}
+
 resource "aws_instance" "ec2-instance" {
-  ami                         = var.ami
+  ami                         = var.ami[data.aws_region.current.name]
   instance_type               = "t3.micro"
-  availability_zone           = var.vpc.availability_zone
+  availability_zone           = var.availability_zone[data.aws_region.current.name]
   associate_public_ip_address = true
-  key_name                    = var.ssh_key_pair_name
-  vpc_security_group_ids      = [var.vpc.security_group_id]
-  subnet_id                   = var.vpc.public_subnet_id
+  key_name                    = var.ssh_key_pair_name[data.aws_region.current.name]
+  vpc_security_group_ids      = [var.security_group_id]
+  subnet_id                   = var.public_subnet_id
   user_data                   = templatefile("${path.module}/user_data.tpl", { nginx_file_content = var.dns.geolocation_continent_code })
 }
 
