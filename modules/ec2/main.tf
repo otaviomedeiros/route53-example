@@ -32,3 +32,7 @@ resource "aws_instance" "ec2-instance" {
   subnet_id                   = var.public_subnet_id
   user_data                   = templatefile("${path.module}/user_data.tpl", { nginx_file_content = var.nginx_file_content })
 }
+
+output "ec2_public_ip" {
+  value = aws_instance.ec2-instance.public_ip
+}

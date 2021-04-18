@@ -18,6 +18,8 @@ module "route53" {
 
     domain = var.domain
     sub_domain = var.sub_domain
+    north_america_ec2_public_id = module.ec2_us.ec2_public_ip
+    south_america_ec2_public_id = module.ec2_br.ec2_public_ip
 }
 
 module "s3_static_website" {
