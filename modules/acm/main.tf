@@ -17,11 +17,12 @@ variable "sub_domain_hosted_zone_id" {
 locals {
   domain_name_wildcard = "*.${var.domain}"
   sub_domain_name_wildcard = "*.${var.sub_domain}"
+  api_sub_domain_name_wildcard = "*.api.${var.sub_domain}"
 }
 
 resource "aws_acm_certificate" "cert" {
   domain_name       = local.domain_name_wildcard
-  subject_alternative_names = [local.sub_domain_name_wildcard]
+  subject_alternative_names = [local.sub_domain_name_wildcard, local.api_sub_domain_name_wildcard]
   validation_method = "DNS"
 
   lifecycle {
@@ -50,4 +51,8 @@ resource "aws_route53_record" "acm_validation_dns_record" {
 resource "aws_acm_certificate_validation" "example" {
   certificate_arn         = aws_acm_certificate.cert.arn
   validation_record_fqdns = [for record in aws_route53_record.acm_validation_dns_record : record.fqdn]
+}
+
+output "certificate_arn" {
+    value = aws_acm_certificate_validation.example.certificate_arn
 }

@@ -20,10 +20,22 @@ module "route53" {
   sub_domain = var.hosted_zone_sub_domain
 }
 
-module "acm" {
+module "acm_us" {
   source = "./modules/acm"
   providers = {
     aws = aws.north_america
+  } 
+
+  domain = var.hosted_zone_domain
+  sub_domain = var.hosted_zone_sub_domain
+  main_hosted_zone_id = module.route53.main_hosted_zone_id
+  sub_domain_hosted_zone_id = module.route53.sub_domain_hosted_zone_id
+}
+
+module "acm_br" {
+  source = "./modules/acm"
+  providers = {
+    aws = aws.south_america
   } 
 
   domain = var.hosted_zone_domain
@@ -116,4 +128,26 @@ module "ec2_br" {
   availability_zone = var.availability_zone
   ami = var.ami
   ssh_key_pair_name = var.ssh_key_pair_name
+}
+
+module "api_gateway_us" {
+  source = "./modules/api_gateway"
+  providers = {
+    aws = aws.north_america
+  } 
+
+  sub_domain = var.hosted_zone_sub_domain
+  certificate_arn = module.acm_us.certificate_arn
+  zone_id = module.route53.sub_domain_hosted_zone_id
+}
+
+module "api_gateway_br" {
+  source = "./modules/api_gateway"
+  providers = {
+    aws = aws.south_america
+  } 
+
+  sub_domain = var.hosted_zone_sub_domain
+  certificate_arn = module.acm_br.certificate_arn
+  zone_id = module.route53.sub_domain_hosted_zone_id
 }
