@@ -10,6 +10,8 @@ variable "zone_id" {
     type = string
 }
 
+data "aws_region" "current" {}
+
 resource "aws_api_gateway_rest_api" "api_gateway_service" {
   body = jsonencode({
     openapi = "3.0.1"
@@ -58,7 +60,7 @@ resource "aws_api_gateway_stage" "stage" {
 
 resource "aws_api_gateway_domain_name" "custom_domain_name" {
   regional_certificate_arn = var.certificate_arn
-  domain_name     = "api.${var.sub_domain}"
+  domain_name = "${data.aws_region.current.name}.api.${var.sub_domain}"
 
   endpoint_configuration {
     types = ["REGIONAL"]

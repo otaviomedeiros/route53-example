@@ -17,11 +17,12 @@ variable "sub_domain_hosted_zone_id" {
 locals {
   domain_name_wildcard = "*.${var.domain}"
   sub_domain_name_wildcard = "*.${var.sub_domain}"
+  api_sub_domain_name_wildcard = "*.api.${var.sub_domain}"
 }
 
 resource "aws_acm_certificate" "cert" {
   domain_name       = local.domain_name_wildcard
-  subject_alternative_names = [local.sub_domain_name_wildcard]
+  subject_alternative_names = [local.sub_domain_name_wildcard, local.api_sub_domain_name_wildcard]
   validation_method = "DNS"
 
   lifecycle {
