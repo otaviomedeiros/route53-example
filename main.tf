@@ -117,3 +117,14 @@ module "ec2_br" {
   ami = var.ami
   ssh_key_pair_name = var.ssh_key_pair_name
 }
+
+module "api_gateway" {
+  source = "./modules/api_gateway"
+  providers = {
+    aws = aws.north_america
+  } 
+
+  sub_domain = var.hosted_zone_sub_domain
+  certificate_arn = module.acm.certificate_arn
+  zone_id = module.route53.sub_domain_hosted_zone_id
+}

@@ -51,3 +51,7 @@ resource "aws_acm_certificate_validation" "example" {
   certificate_arn         = aws_acm_certificate.cert.arn
   validation_record_fqdns = [for record in aws_route53_record.acm_validation_dns_record : record.fqdn]
 }
+
+output "certificate_arn" {
+    value = aws_acm_certificate_validation.example.certificate_arn
+}
