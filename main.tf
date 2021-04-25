@@ -20,6 +20,18 @@ module "route53" {
   sub_domain = var.hosted_zone_sub_domain
 }
 
+module "acm" {
+  source = "./modules/acm"
+  providers = {
+    aws = aws.north_america
+  } 
+
+  domain = var.hosted_zone_domain
+  sub_domain = var.hosted_zone_sub_domain
+  main_hosted_zone_id = module.route53.main_hosted_zone_id
+  sub_domain_hosted_zone_id = module.route53.sub_domain_hosted_zone_id
+}
+
 module "s3_static_website" {
   source = "./modules/s3-static-website"
   providers = {
