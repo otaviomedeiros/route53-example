@@ -15,13 +15,13 @@ variable "sub_domain_hosted_zone_id" {
 }
 
 locals {
-  domain_name = "*.${var.domain}"
-  sub_domain_name = "*.${var.sub_domain}"
+  domain_name_wildcard = "*.${var.domain}"
+  sub_domain_name_wildcard = "*.${var.sub_domain}"
 }
 
 resource "aws_acm_certificate" "cert" {
-  domain_name       = local.domain_name
-  subject_alternative_names = [local.sub_domain_name]
+  domain_name       = local.domain_name_wildcard
+  subject_alternative_names = [local.sub_domain_name_wildcard]
   validation_method = "DNS"
 
   lifecycle {
@@ -35,7 +35,7 @@ resource "aws_route53_record" "acm_validation_dns_record" {
       name    = dvo.resource_record_name
       record  = dvo.resource_record_value
       type    = dvo.resource_record_type
-      zone_id = dvo.domain_name == local.domain_name ? var.main_hosted_zone_id : var.sub_domain_hosted_zone_id
+      zone_id = dvo.domain_name == local.domain_name_wildcard ? var.main_hosted_zone_id : var.sub_domain_hosted_zone_id
     }
   }
 
