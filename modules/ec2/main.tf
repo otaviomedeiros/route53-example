@@ -28,7 +28,7 @@ variable "ssh_key_pair_name" {
 
 data "aws_region" "current" {}
 
-resource "aws_instance" "ec2-instance" {
+resource "aws_instance" "ec2_instance" {
   ami                         = var.ami[data.aws_region.current.name]
   instance_type               = "t3.micro"
   availability_zone           = var.availability_zone[data.aws_region.current.name]
@@ -45,7 +45,7 @@ resource "aws_route53_record" "geo_dns_record" {
   type    = "A"
   ttl     = "60"
   set_identifier = var.dns.geolocation_continent_code
-  records = [aws_instance.ec2-instance.public_ip]
+  records = [aws_instance.ec2_instance.public_ip]
 
   geolocation_routing_policy {
     continent = var.dns.geolocation_continent_code
@@ -58,7 +58,7 @@ resource "aws_route53_record" "weighted_dns_record" {
   type    = "A"
   ttl     = "60"
   set_identifier = data.aws_region.current.name
-  records = [aws_instance.ec2-instance.public_ip]
+  records = [aws_instance.ec2_instance.public_ip]
 
   weighted_routing_policy {
     weight = 50
@@ -66,5 +66,5 @@ resource "aws_route53_record" "weighted_dns_record" {
 }
 
 output "ec2_public_ip" {
-  value = aws_instance.ec2-instance.public_ip
+  value = aws_instance.ec2_instance.public_ip
 }
