@@ -20,7 +20,7 @@ module "route53" {
   sub_domain = var.hosted_zone_sub_domain
 }
 
-module "acm_us" {
+module "acm_north_america" {
   source = "./modules/acm"
   providers = {
     aws = aws.north_america
@@ -32,7 +32,7 @@ module "acm_us" {
   sub_domain_hosted_zone_id = module.route53.sub_domain_hosted_zone_id
 }
 
-module "acm_br" {
+module "acm_south_america" {
   source = "./modules/acm"
   providers = {
     aws = aws.south_america
@@ -54,7 +54,7 @@ module "s3_static_website" {
   main_hosted_zone_id = module.route53.main_hosted_zone_id
 }
 
-module "vpc_us" {
+module "vpc_north_america" {
   source = "./modules/vpc"
   providers = {
     aws = aws.north_america
@@ -64,7 +64,7 @@ module "vpc_us" {
   availability_zone = var.availability_zone
 }
 
-module "vpc_br" {
+module "vpc_south_america" {
   source = "./modules/vpc"
   providers = {
     aws = aws.south_america
@@ -74,25 +74,7 @@ module "vpc_br" {
   availability_zone = var.availability_zone
 }
 
-module "security_groups_us" {
-  source = "./modules/security_groups"
-  providers = {
-    aws = aws.north_america
-  } 
-
-  vpc_id = module.vpc_us.vpc_id
-}
-
-module "security_groups_br" {
-  source = "./modules/security_groups"
-  providers = {
-    aws = aws.south_america
-  }
-
-  vpc_id = module.vpc_br.vpc_id
-}
-
-module "ec2_us" {
+module "ec2_north_america" {
   source = "./modules/ec2"
   providers = {
     aws = aws.north_america
@@ -104,14 +86,14 @@ module "ec2_us" {
     geolocation_continent_code = "NA"
   }
 
-  public_subnet_id = module.vpc_us.public_subnet_id
-  security_group_id = module.security_groups_us.ssh_security_group_id
+  public_subnet_id = module.vpc_north_america.public_subnet_id
+  security_group_id = module.vpc_north_america.security_group_id
   availability_zone = var.availability_zone
   ami = var.ami
   ssh_key_pair_name = var.ssh_key_pair_name
 }
 
-module "ec2_br" {
+module "ec2_south_america" {
   source = "./modules/ec2"
   providers = {
     aws = aws.south_america
@@ -123,31 +105,31 @@ module "ec2_br" {
     geolocation_continent_code = "SA"
   }
 
-  public_subnet_id = module.vpc_br.public_subnet_id
-  security_group_id = module.security_groups_br.ssh_security_group_id
+  public_subnet_id = module.vpc_south_america.public_subnet_id
+  security_group_id = module.vpc_south_america.security_group_id
   availability_zone = var.availability_zone
   ami = var.ami
   ssh_key_pair_name = var.ssh_key_pair_name
 }
 
-module "api_gateway_us" {
+module "api_gateway_north_america" {
   source = "./modules/api_gateway"
   providers = {
     aws = aws.north_america
   } 
 
   sub_domain = var.hosted_zone_sub_domain
-  certificate_arn = module.acm_us.certificate_arn
+  certificate_arn = module.acm_north_america.certificate_arn
   zone_id = module.route53.sub_domain_hosted_zone_id
 }
 
-module "api_gateway_br" {
+module "api_gateway_south_america" {
   source = "./modules/api_gateway"
   providers = {
     aws = aws.south_america
   } 
 
   sub_domain = var.hosted_zone_sub_domain
-  certificate_arn = module.acm_br.certificate_arn
+  certificate_arn = module.acm_south_america.certificate_arn
   zone_id = module.route53.sub_domain_hosted_zone_id
 }
