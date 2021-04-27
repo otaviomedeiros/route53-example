@@ -20,12 +20,7 @@ resource "aws_route53_record" "sub_domain_dns_record" {
   type    = "NS"
   ttl     = "60"
   
-  records = [
-    aws_route53_zone.sub_domain.name_servers[0],
-    aws_route53_zone.sub_domain.name_servers[1],
-    aws_route53_zone.sub_domain.name_servers[2],
-    aws_route53_zone.sub_domain.name_servers[3],
-  ]
+  records = aws_route53_zone.sub_domain.name_servers
 }
 
 output "main_hosted_zone_id" {
