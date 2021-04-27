@@ -9,7 +9,16 @@ It creates 2 hosted zones and DNS records for:
 - Geolocation
 - Weighted traffic
 
-It also provides 2 EC2 instances on both regions to test geolocation DNS records
+It also provides 2 EC2 instances on both us-east-1 and sa-east-1 regions to test geolocation DNS records.
+
+When provisioning the infrastructure, you have to provide a domain and a sub domain. For example, if you provide `example.com` as domain and `subdomain.example.com` as subdomain, you'll have:
+
+- `http://example.com` and `http://www.example.com` serving a static website
+- `http://geo.store.otaviomedeiros.com` serving content from 2 EC2 instances, one in each region
+- `http://weighted.store.otaviomedeiros.com` spreading the traffic for both regions
+- `https://us-east-1.api.store.otaviomedeiros.com/todos` serving dynamic content for `us-east-1`
+- `https://sa-east-1.api.store.otaviomedeiros.com/todos` serving dynamic content for `sa-east-1`
+
 
 ### Prerequisites
 
